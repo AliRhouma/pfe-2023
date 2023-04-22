@@ -92,6 +92,7 @@ fun LoginScreen(navController: NavHostController) {
             Text("Register")
         }
 
+
         TextButton(
             onClick = {
                 navController.navigate(Screen.Register.route)
