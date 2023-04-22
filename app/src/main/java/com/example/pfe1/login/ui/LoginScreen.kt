@@ -91,6 +91,16 @@ fun LoginScreen(navController: NavHostController) {
         ) {
             Text("Register")
         }
+        TextButton(
+            onClick = {
+                navController.navigate(Screen.Register.route)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text("Register")
+        }
 
         if (state.isLoading) {
             CircularProgressIndicator()
