@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pfe1.kidsView.ui.ChildsScreen
 import com.example.pfe1.login.ui.LoginScreen
 import com.example.pfe1.register.ui.RegisterScreen
 import com.example.pfe1.subjects.ui.SubjectsScreen
@@ -31,6 +32,12 @@ fun Navigation(){
             route = Screen.Register.route
         ){
             RegisterScreen(navController)
+        }
+
+        composable(
+            route = Screen.Childs.route
+        ){
+            ChildsScreen()
         }
 
     }

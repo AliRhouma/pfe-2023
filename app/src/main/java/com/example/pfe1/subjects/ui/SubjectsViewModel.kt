@@ -15,8 +15,8 @@ import kotlinx.coroutines.runBlocking
 class SubjectsViewModel : ViewModel() {
     private val subjectRepository: SubjectRepository = SubjectRepositoryImpl()
 
-    private val _uiState = MutableStateFlow(SubjectsUiState())
-    val uiState = _uiState.asStateFlow()
+        private val _uiState = MutableStateFlow(SubjectsUiState())
+        val uiState = _uiState.asStateFlow()
 
     init {
         getSubjects()

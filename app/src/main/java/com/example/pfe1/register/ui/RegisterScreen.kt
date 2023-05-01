@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,6 +74,7 @@ fun RegisterScreen(navController: NavHostController) {
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
@@ -89,7 +91,7 @@ fun RegisterScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
-            Text("Login")
+            Text("Register")
         }
         if (state.isLoading) {
             CircularProgressIndicator()

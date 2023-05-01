@@ -6,4 +6,7 @@ sealed class Screen(
     object Login : Screen(route = "login")
     object Subjects : Screen(route  =  "subjects")
     object Register : Screen(route = "register")
+    object Childs : Screen(route = "childs")
+
+
 }

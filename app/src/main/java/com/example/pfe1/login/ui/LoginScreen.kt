@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -16,6 +17,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.pfe1.navigation.Screen
 import com.example.pfe1.subjects.ui.SubjectsViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -27,7 +30,13 @@ fun LoginScreen(navController: NavHostController) {
 
     LaunchedEffect(key1 = state.isSuccess){
         if (state.isSuccess) {
-            navController.navigate(Screen.Subjects.route)
+            navController.navigate(Screen.Childs.route)
+        }
+    }
+
+    LaunchedEffect(key1 = true) {
+        if (Firebase.auth.currentUser != null) {
+            navController.navigate(Screen.Childs.route)
         }
     }
 
@@ -62,6 +71,7 @@ fun LoginScreen(navController: NavHostController) {
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
@@ -91,34 +101,6 @@ fun LoginScreen(navController: NavHostController) {
         ) {
             Text("Register")
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         TextButton(
             onClick = {
