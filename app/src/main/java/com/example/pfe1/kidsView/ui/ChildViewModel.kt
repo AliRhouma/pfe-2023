@@ -2,15 +2,11 @@ package com.example.pfe1.kidsView.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pfe1.kidsView.data.remote.ChildRemote
 import com.example.pfe1.kidsView.data.repository.ChildRepositoryImpl
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
-import com.example.pfe1.subjects.ui.SubjectsEvent
-import com.example.pfe1.subjects.ui.SubjectsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.UUID
@@ -24,19 +20,29 @@ class ChildViewModel : ViewModel() {
     private val _addChildUiState = MutableStateFlow(AddChildUiState())
     val addChildUiState = _addChildUiState.asStateFlow()
 
+    private val _deleteChildUiState = MutableStateFlow(DeleteChildUiState())
+    val deleteChildUiState = _deleteChildUiState.asStateFlow()
+
     init {
         getChilds()
     }
 
-    fun onEvent(event: ChildEvents){
-        when(event) {
-            is ChildEvents.AddChild -> addChild(name = event.name, schoolYear = event.schoolYear, imageUrl = event.imageUrl)
+    fun onEvent(event: ChildEvents) {
+        when (event) {
+            is ChildEvents.AddChild -> addChild(
+                name = event.name,
+                schoolYear = event.schoolYear,
+                imageUrl = event.imageUrl
+            )
+
             is ChildEvents.ClearAddChild -> clearAddChild()
+            is ChildEvents.Delete -> deleteChild(id = event.id)
             else -> {}
         }
     }
 
-    private fun getChilds(){
+
+    private fun getChilds() {
         _uiState.value = ChildUiState(
             isLoading = true
         )
@@ -93,7 +99,24 @@ class ChildViewModel : ViewModel() {
 
     }
 
-    private fun clearAddChild(){
+    private fun clearAddChild() {
         _addChildUiState.value = AddChildUiState()
+    }
+
+    private fun deleteChild(id: String) {
+        _deleteChildUiState.value = DeleteChildUiState(isLoading = true)
+
+        viewModelScope.launch {
+            try {
+                childRepository.deleteChild(id)
+                _deleteChildUiState.value = DeleteChildUiState(isSuccess = true)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Failure
+                _deleteChildUiState.value = DeleteChildUiState(
+                    errorMessage = e.message ?: ""
+                )
+            }
+        }
     }
 }

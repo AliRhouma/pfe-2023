@@ -16,18 +16,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,12 +42,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.pfe1.kidsView.ui.components.ChildCard
@@ -101,36 +108,70 @@ fun ChildsScreen(){
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Child's name") },
-                    modifier = Modifier.fillMaxWidth()
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color(0xFFBED9E4),
+                        unfocusedIndicatorColor = Color(0xFFBED9E4)
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .fillMaxWidth()
                 )
+
                 Spacer(modifier = Modifier.height(22.dp))
                 //SchoolYear
-                Text(text = "School year:")
+                Text(
+                    text = "School year:",
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     schoolYears.forEachIndexed { index, childSchoolYear ->
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f),
+                            horizontalAlignment = CenterHorizontally
+
+                        ) {
                             RadioButton(
                                 selected = selectedSchoolYear == index,
                                 onClick = {
                                     selectedSchoolYear = index
-                                    schoolYear = childSchoolYear
-                                          },
-                                modifier = Modifier.fillMaxWidth()
+                                },
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = Color(0xFF1984A7),
+                                    unselectedColor = Color(0xFFA7A7A7)
+                                ),
+                                modifier = Modifier.size(24.dp)
                             )
                             Text(
                                 text = childSchoolYear,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center
+                                color = Color.Black,
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(vertical = 8.dp)
                             )
                         }
                     }
                 }
+
                 Spacer(modifier = Modifier.height(22.dp))
                 // Avatar Picker
-                Text(text = "Choose an avatar")
+                Text(
+                    text = "Choose an avatar",
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
                 Spacer(modifier = Modifier.height(12.dp))
                 //avatarPicker
                 Row(
@@ -150,7 +191,7 @@ fun ChildsScreen(){
                                     .size(72.dp)
                                     .border(
                                         width = if (avatarIsSelected == index) 4.dp else 1.dp,
-                                        color = if (avatarIsSelected == index) Color.Blue else Color.White,
+                                        color = if (avatarIsSelected == index) Color(0xFF1984A7) else Color.White,
                                         shape = CircleShape
                                     )
                                     .clip(CircleShape)
@@ -181,7 +222,7 @@ fun ChildsScreen(){
                                     .size(72.dp)
                                     .border(
                                         width = if (avatarIsSelected == index + 3) 4.dp else 1.dp,
-                                        color = if (avatarIsSelected == index + 3) Color.Blue else Color.White,
+                                        color = if (avatarIsSelected == index + 3) Color(0xFF1984A7) else Color.White,
                                         shape = CircleShape
                                     )
                                     .clip(CircleShape)
@@ -208,11 +249,19 @@ fun ChildsScreen(){
                         imageUrl = imageUrl
                     ))
                 },
-                enabled = !addState.isLoading,
+                colors =
+                if (addState.isLoading)
+                    ButtonDefaults.outlinedButtonColors()
+                else
+                    ButtonDefaults.textButtonColors(
+                        backgroundColor = Color(0xFFBED9E4),
+                        contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                colors = if (addState.isLoading) ButtonDefaults.outlinedButtonColors() else ButtonDefaults.buttonColors()
+                    .padding(16.dp)
+                    .fillMaxWidth(0.4f),
+                enabled = !addState.isLoading,
             ) {
                 if (addState.isLoading){
                     CircularProgressIndicator()
@@ -266,17 +315,31 @@ fun ChildsScreen(){
                 }
 
                 items(state.childList) { child ->
-                    ChildCard(childName = child.name, childSchoolYear = child.schoolYear, imageUrl = child.imageUrl )
+                    ChildCard(childName = child.name, childSchoolYear = child.schoolYear, imageUrl = child.imageUrl, id = child.id)
                 }
 
                 item {
-                    TextButton(onClick = {
-                        coroutineScope.launch {
-                            modalSheetState.show()
-                        }
-                    }) {
-                        Text("Add child")
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                modalSheetState.show()
+                            }
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            backgroundColor = Color(0xFFBED9E4),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(0.4f)
+                    ) {
+                        Text(
+                            text = "Add child",
+                            style = MaterialTheme.typography.button
+                        )
                     }
+
                 }
             }
         }
