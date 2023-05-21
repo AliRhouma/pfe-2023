@@ -93,11 +93,13 @@ else {
 
             }
             Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier
                     .weight(3.2f)
                     .padding(20.dp)
             ) {
                 Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
                         .weight(2f)
@@ -118,6 +120,7 @@ else {
                 }
 
                 Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
                         .weight(2f)

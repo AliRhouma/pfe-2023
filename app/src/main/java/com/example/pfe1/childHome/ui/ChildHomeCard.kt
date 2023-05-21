@@ -2,13 +2,17 @@ package com.example.pfe1.childHome.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,23 +24,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildHomeCard(Text: String, IconUrl: String, route: String, navController: NavController ) {
     Card(
+        onClick = {
+            navController.navigate(route)
+        },
         shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFBED9E4)
+        ),
         modifier = Modifier
-            .padding(6.dp)
-            .clickable { navController.navigate(route) }
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFBED9E4))
             .fillMaxWidth()
             .height(height = 490.dp),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .background(Color(0xFFBED9E4)),
-
+                .fillMaxSize()
         ) {
             Text(
                 text = Text,
@@ -46,15 +52,7 @@ fun ChildHomeCard(Text: String, IconUrl: String, route: String, navController: N
                 ),
                 //fontFamily = FontFamily.Cursive, // Or any other font you prefer
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .padding(8.dp)
-
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-
         }
     }
 }

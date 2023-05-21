@@ -5,6 +5,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,30 +61,30 @@ name = "noteColor"
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    var currentRoute by remember { mutableStateOf(Screen.Login.route) }
-
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val screensWithBottomBar = listOf<String>(Screen.Settings.route, Screen.Childs.route)
     Scaffold(
         bottomBar = {
-            if (currentRoute in screensWithBottomBar) {
+            val route = navBackStackEntry?.destination?.route
+            if (screensWithBottomBar.any { route?.startsWith(it) == true }) {
                 BottomNavigationBar(
                     items = listOf(
                         BottomNavItem(
                             name = "Home",
                             route = Screen.Childs.route,
-                            icon = Icons.Default.Home
+                            icon = Icons.Outlined.Home
                         ),
                         BottomNavItem(
                             name = "Chat",
-                            route = "chat",
-                            icon = Icons.Default.Notifications,
+                            route = Screen.Childs.route,
+                            icon = Icons.Outlined.Notifications,
                             badgeCount = 23
                         ),
                         BottomNavItem(
                             name = "Settings",
                             route = Screen.Settings.route,
-                            icon = Icons.Default.Settings,
+                            icon = Icons.Outlined.Settings,
                             badgeCount = 214
                         ),
                     ),
@@ -102,7 +105,6 @@ fun Navigation() {
                 route = Screen.Login.route
             ) {
                 LoginScreen(navController)
-                currentRoute = Screen.Login.route
             }
 
             composable(
@@ -119,7 +121,6 @@ fun Navigation() {
             ) {
                 val childId = it.arguments?.getString("childId") ?: ""
                 SubjectsScreen(navController, childId)
-                currentRoute = Screen.Subjects.route
             }
 
 
@@ -127,7 +128,6 @@ fun Navigation() {
                 route = Screen.Register.route
             ) {
                 RegisterScreen(navController)
-                currentRoute = Screen.Register.route
 
             }
 
@@ -149,7 +149,6 @@ fun Navigation() {
                     parentId = parentId,
                     paddingValues = paddingValues
                 )
-                currentRoute = Screen.Childs.route
 
             }
 
@@ -170,7 +169,6 @@ fun Navigation() {
                     navController = navController,
                     childId = childId,
                 )
-                currentRoute = Screen.ChildHome.route
 
             }
 
@@ -200,7 +198,6 @@ fun Navigation() {
                     childId = childId,
                     subjectId = subjectId
                 )
-                currentRoute = Screen.Tasks.route
             }
 
             composable(
@@ -240,7 +237,6 @@ fun Navigation() {
                     taskId = taskId,
                     subjectId = subjectId
                 )
-                currentRoute = Screen.Question.route
 
             }
 
@@ -248,7 +244,6 @@ fun Navigation() {
                 route = Screen.Settings.route
             ) {
                 SettingsScreen(navController)
-                currentRoute = Screen.Settings.route
 
             }
 

@@ -83,7 +83,8 @@ fun QuestionScreen(
                 if (questionPageState < state.questions.size - 1) {
                     questionPageState += 1
                 } else {
-                    navController.navigate(Screen.Tasks.route + "?childId=${childId}&&subjectId=${subjectId}")
+                    navController.popBackStack(Screen.Tasks.route, false)
+                    // navController.navigate(Screen.Tasks.route + "?childId=${childId}&&subjectId=${subjectId}")
                 }
             }) {
                 Text(text = if (questionPageState == state.questions.size - 1) "Finish" else "Next")

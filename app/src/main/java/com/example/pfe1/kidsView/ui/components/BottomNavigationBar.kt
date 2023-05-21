@@ -8,6 +8,10 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -32,20 +36,23 @@ fun BottomNavigationBar(
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-
-
-    BottomNavigation(
+    NavigationBar(
         modifier = modifier,
-        backgroundColor = Color(0xFFBED9E4),
-        elevation = 5.dp
+        containerColor = Color(0xFFBED9E4),
+        tonalElevation = 5.dp
     ) {
         items.forEach { item ->
-            val selected = item.route == backStackEntry.value?.destination?.route
-            BottomNavigationItem(
+            val selected = backStackEntry.value?.destination?.route?.startsWith(item.route) == true
+            NavigationBarItem(
                 selected = selected,
                 onClick = { onItemClick(item) },
-                selectedContentColor = Color(0xFF289ACF),
-                unselectedContentColor = Color(0xFF1984A7),
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color(0xFF289ACF),
+                    selectedTextColor = Color(0xFF289ACF),
+
+                    unselectedIconColor = Color(0xFF1984A7),
+                    unselectedTextColor = Color(0xFF1984A7),
+                ),
                 icon = {
                     Column(horizontalAlignment = CenterHorizontally) {
                         if(item.badgeCount > 0) {
@@ -59,8 +66,7 @@ fun BottomNavigationBar(
                                         }
                                     )
                                 }
-                            })
-                             {
+                            }) {
                                 Icon(
                                     imageVector = item.icon,
                                     contentDescription = item.name
@@ -72,7 +78,7 @@ fun BottomNavigationBar(
                                 contentDescription = item.name
                             )
                         }
-                        if(selected) {
+                        if (selected) {
                             Text(
                                 text = item.name,
                                 textAlign = TextAlign.Center,

@@ -36,90 +36,105 @@ fun LoginScreen(navController: NavHostController) {
         }
     }
 
+    var isLoginCheckLoading by remember { mutableStateOf(true) }
+
     LaunchedEffect(key1 = true) {
         if (Firebase.auth.currentUser != null) {
             navController.navigate(Screen.Childs.route)
+        } else {
+            isLoginCheckLoading = false
         }
     }
 
-
-    Column(
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+
     ) {
-        Text(
-            text = "Login",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        )
-
-        Button(
-            onClick = {
-               viewModel.login(email, password)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Login")
-        }
-
-        TextButton(
-            onClick = {
-                navController.navigate(Screen.Register.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Register")
-        }
-
-        TextButton(
-            onClick = {
-                navController.navigate(Screen.Register.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Register")
-        }
-
-        if (state.isLoading) {
+        if (isLoginCheckLoading) {
             CircularProgressIndicator()
         }
-        else if (state.error != null) {
-            Text(state.error ?: "")
+        else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Login",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                )
+
+                Button(
+                    onClick = {
+                        viewModel.login(email, password)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text("Login")
+                }
+
+                TextButton(
+                    onClick = {
+                        navController.navigate(Screen.Register.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text("Register")
+                }
+
+                TextButton(
+                    onClick = {
+                        navController.navigate(Screen.Register.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text("Register")
+                }
+
+                if (state.isLoading) {
+                    CircularProgressIndicator()
+                }
+                else if (state.error != null) {
+                    Text(state.error ?: "")
+                }
+            }
         }
     }
 }
