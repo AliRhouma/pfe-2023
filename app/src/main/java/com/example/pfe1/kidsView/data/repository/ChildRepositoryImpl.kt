@@ -14,13 +14,14 @@ import kotlinx.coroutines.tasks.await
 class ChildRepositoryImpl : ChildRepository{
     private val childCollection = Firebase.firestore.collection("childs")
 
-    override fun getAllChilds(): Flow<List<Child>> = callbackFlow {
-        childCollection.addSnapshotListener { value, error ->
+    override fun getAllChilds(parentId: String): Flow<List<Child>> = callbackFlow {
+        childCollection.whereEqualTo("parentId",parentId).addSnapshotListener { value, error ->
             if (error != null) throw error
             if (value == null) return@addSnapshotListener
 
-            val response = value.toObjects(ChildRemote::class.java)
-            trySend(response.mapNotNull { it?.toChild() })
+            val response = value.toObjects(ChildRemote::class.java).mapNotNull { it?.toChild() }
+
+            trySend(response)
         }
 
         awaitClose { cancel() }

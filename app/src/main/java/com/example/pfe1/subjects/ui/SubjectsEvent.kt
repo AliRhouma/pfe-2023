@@ -1,17 +1,18 @@
 package com.example.pfe1.subjects.ui
 
-import javax.security.auth.Subject
+import com.example.pfe1.enumClass.SchoolYear
+import com.example.pfe1.enumClass.Subjects
 
 sealed class SubjectsEvent {
 
-    data class Event1 (
-        val id : String,
-    ) : SubjectsEvent()
+    data class AddSubject (
+        val name : String,
+        val schoolYear : SchoolYear,
+        val type: Subjects
+        ) : SubjectsEvent()
 
-    object GetSubjects : SubjectsEvent()
+    data class GetSubjects (
+        val childId: String
+        ) : SubjectsEvent()
 
-}
-
-object Ghhhh {
-    var x : String = "alia"
 }

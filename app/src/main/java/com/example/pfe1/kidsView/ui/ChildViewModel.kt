@@ -1,7 +1,9 @@
 package com.example.pfe1.kidsView.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pfe1.enumClass.SchoolYear
 import com.example.pfe1.kidsView.data.repository.ChildRepositoryImpl
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
@@ -11,8 +13,10 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.UUID
 
-class ChildViewModel : ViewModel() {
+class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     private val childRepository: ChildRepository = ChildRepositoryImpl()
+
+    private val parentId = savedStateHandle.get<String>("parentId")?:""
 
     private val _uiState = MutableStateFlow(ChildUiState())
     val uiState = _uiState.asStateFlow()
@@ -49,7 +53,7 @@ class ChildViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                childRepository.getAllChilds().collect { childs ->
+                childRepository.getAllChilds(parentId).collect { childs ->
                     _uiState.value = ChildUiState(
                         childList = childs
                     )
@@ -67,13 +71,14 @@ class ChildViewModel : ViewModel() {
 
     }
 
-    private fun addChild(name: String, schoolYear: String, imageUrl: String) {
+    private fun addChild(name: String, schoolYear: SchoolYear, imageUrl: String) {
         _addChildUiState.value = AddChildUiState(
             isLoading = true
         )
 
         val child = Child(
             id = UUID.randomUUID().toString(),
+            parentId = parentId,
             name = name,
             schoolYear = schoolYear,
             imageUrl = imageUrl

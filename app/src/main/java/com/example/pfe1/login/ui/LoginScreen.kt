@@ -2,7 +2,7 @@ package com.example.pfe1.login.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +16,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.pfe1.navigation.Screen
-import com.example.pfe1.subjects.ui.SubjectsViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -25,12 +24,15 @@ fun LoginScreen(navController: NavHostController) {
     val viewModel = viewModel<LoginViewModel>()
     val state by viewModel.uiState.collectAsState()
 
+    val auth = Firebase.auth
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = state.isSuccess){
         if (state.isSuccess) {
-            navController.navigate(Screen.Childs.route)
+
+            navController.navigate(Screen.Childs.route + "?parentId=${auth.currentUser?.uid}")
         }
     }
 

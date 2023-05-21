@@ -7,6 +7,10 @@ sealed class Screen(
     object Subjects : Screen(route  =  "subjects")
     object Register : Screen(route = "register")
     object Childs : Screen(route = "childs")
+    object ChildHome : Screen(route = "childHome")
+    object Tasks : Screen(route = "tasks")
+    object Question : Screen(route = "question")
+    object Settings : Screen(route = "settings")
 
 
 }

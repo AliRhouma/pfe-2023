@@ -1,6 +1,9 @@
 package com.example.pfe1.subjects.domain
 
+import kotlinx.coroutines.flow.Flow
+
 interface SubjectRepository {
-    suspend fun getAllSubject() : List<Subject>
+     fun getSubjects(childId : String) : Flow<List<Subject>>
+    fun getSubject(subjectId : String): Flow<Subject>
     suspend fun addSubject(subject: Subject)
 }

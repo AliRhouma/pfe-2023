@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,22 +18,28 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,20 +54,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.pfe1.enumClass.SchoolYear
+import com.example.pfe1.kidsView.ui.components.BottomNavigationBar
 import com.example.pfe1.kidsView.ui.components.ChildCard
+import com.example.pfe1.navigation.Screen
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
-fun ChildsScreen(){
+fun ChildsScreen(
+    navController: NavController,
+    parentId: String,
+    paddingValues: PaddingValues,
+){
+    val navItems = listOf(
+        BottomNavItem("Home", "",Icons.Filled.Home),
+        BottomNavItem("Profile","", Icons.Filled.Person),
+        BottomNavItem("Settings","", Icons.Filled.Settings)
+    )
+    var selectedTab by remember { mutableStateOf(0) }
+
+
+    val pageState by remember {
+        mutableStateOf(0)
+    }
+
     val viewModel = viewModel<ChildViewModel>()
+
     val state by viewModel.uiState.collectAsState()
     val addState by viewModel.addChildUiState.collectAsState()
 
@@ -84,14 +116,15 @@ fun ChildsScreen(){
         "https://static.vecteezy.com/system/resources/previews/021/770/047/large_2x/avatar-of-a-junior-school-indonesian-character-free-vector.jpg",
         "https://static.vecteezy.com/system/resources/previews/020/194/530/large_2x/avatar-of-a-character-with-casual-outfit-free-vector.jpg"
     )
-    var avatarIsSelected by remember { mutableStateOf(-1) }
+    var selectedAvatar by remember { mutableStateOf(-1) }
 
 
     LaunchedEffect(key1 = addState.isSuccess) {
         if (addState.isSuccess) {
             modalSheetState.hide()
             name = ""
-            schoolYear = ""
+            selectedSchoolYear = -1
+            selectedAvatar = -1
             viewModel.onEvent(ChildEvents.ClearAddChild)
         }
     }
@@ -109,7 +142,7 @@ fun ChildsScreen(){
                     onValueChange = { name = it },
                     label = { Text("Child's name") },
                     colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.White,
+                        containerColor = Color.White,
                         cursorColor = Color.Black,
                         focusedIndicatorColor = Color(0xFFBED9E4),
                         unfocusedIndicatorColor = Color(0xFFBED9E4)
@@ -145,6 +178,7 @@ fun ChildsScreen(){
                                 selected = selectedSchoolYear == index,
                                 onClick = {
                                     selectedSchoolYear = index
+                                    schoolYear = childSchoolYear
                                 },
                                 colors = RadioButtonDefaults.colors(
                                     selectedColor = Color(0xFF1984A7),
@@ -190,13 +224,13 @@ fun ChildsScreen(){
                                 modifier = Modifier
                                     .size(72.dp)
                                     .border(
-                                        width = if (avatarIsSelected == index) 4.dp else 1.dp,
-                                        color = if (avatarIsSelected == index) Color(0xFF1984A7) else Color.White,
+                                        width = if (selectedAvatar == index) 4.dp else 1.dp,
+                                        color = if (selectedAvatar == index) Color(0xFF1984A7) else Color.White,
                                         shape = CircleShape
                                     )
                                     .clip(CircleShape)
                                     .clickable {
-                                        avatarIsSelected = index
+                                        selectedAvatar = index
                                         imageUrl = avatarUrl
                                     },
                                 contentScale = ContentScale.Crop
@@ -221,13 +255,13 @@ fun ChildsScreen(){
                                 modifier = Modifier
                                     .size(72.dp)
                                     .border(
-                                        width = if (avatarIsSelected == index + 3) 4.dp else 1.dp,
-                                        color = if (avatarIsSelected == index + 3) Color(0xFF1984A7) else Color.White,
+                                        width = if (selectedAvatar == index + 3) 4.dp else 1.dp,
+                                        color = if (selectedAvatar == index + 3) Color(0xFF1984A7) else Color.White,
                                         shape = CircleShape
                                     )
                                     .clip(CircleShape)
                                     .clickable {
-                                        avatarIsSelected = index + 3
+                                        selectedAvatar = index + 3
                                         imageUrl = avatarUrl
                                     },
                                 contentScale = ContentScale.Crop
@@ -236,16 +270,11 @@ fun ChildsScreen(){
                     }
                 }
             }
-
-
-
-
-
             Button(
                 onClick = {
                     viewModel.onEvent(ChildEvents.AddChild(
                         name = name,
-                        schoolYear = schoolYear,
+                        schoolYear = SchoolYear.values()[schoolYear.toInt()],
                         imageUrl = imageUrl
                     ))
                 },
@@ -254,12 +283,13 @@ fun ChildsScreen(){
                     ButtonDefaults.outlinedButtonColors()
                 else
                     ButtonDefaults.textButtonColors(
-                        backgroundColor = Color(0xFFBED9E4),
+                        containerColor = Color(0xFFBED9E4),
                         contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .padding(16.dp)
+                    .align(CenterHorizontally)
                     .fillMaxWidth(0.4f),
                 enabled = !addState.isLoading,
             ) {
@@ -286,7 +316,6 @@ fun ChildsScreen(){
             }
         }
     ) {
-        Scaffold() { paddingValues ->
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -314,9 +343,21 @@ fun ChildsScreen(){
                     }
                 }
 
-                items(state.childList) { child ->
-                    ChildCard(childName = child.name, childSchoolYear = child.schoolYear, imageUrl = child.imageUrl, id = child.id)
-                }
+                /////////////////////////////////////////////////////////////////
+                state.childList.forEach() { child ->
+
+                        item {
+                            ChildCard(
+                                childName = child.name,
+                                childSchoolYear = child.schoolYear,
+                                imageUrl = child.imageUrl,
+                                id = child.id,
+                                navController = navController
+                            )
+                        }
+                    }
+
+
 
                 item {
                     Button(
@@ -326,7 +367,7 @@ fun ChildsScreen(){
                             }
                         },
                         colors = ButtonDefaults.textButtonColors(
-                            backgroundColor = Color(0xFFBED9E4),
+                            containerColor = Color(0xFFBED9E4),
                             contentColor = Color.Black
                         ),
                         shape = RoundedCornerShape(8.dp),
@@ -336,7 +377,7 @@ fun ChildsScreen(){
                     ) {
                         Text(
                             text = "Add child",
-                            style = MaterialTheme.typography.button
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
 
@@ -344,6 +385,3 @@ fun ChildsScreen(){
             }
         }
     }
-
-    
-}

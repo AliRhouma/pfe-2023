@@ -1,46 +1,90 @@
 package com.example.pfe1.subjects.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.pfe1.enumClass.SchoolYear
+import com.example.pfe1.enumClass.Subjects
 import com.example.pfe1.subjects.domain.Subject
+import com.example.pfe1.ui.theme.BlueTheme
 
 @Composable
-fun SubjectsScreen() {
+fun SubjectsScreen(
+    navController: NavController,
+    childId : String,
+) {
     val viewModel = viewModel<SubjectsViewModel>()
+
     val state by viewModel.uiState.collectAsState()
 
-    Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues)
+    Scaffold (
+
+    ){ paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .background(BlueTheme.darkBlue)
         ) {
+
             if (state.isLoading) {
-                CircularProgressIndicator()
-            }
-            else if (state.isFailure) {
-                Text(text = "Error")
-            }
-            else {
-                state.subjects.forEach { subject ->
-                    Text(text = "Subject: ${subject.name}")
+                item {
+                    CircularProgressIndicator()
                 }
             }
+            else if (state.isFailure) {
+                item {
+                    Text(text = "Error")
+                }
+            }
+            else {
 
-            Button(onClick = { viewModel.onEvent(SubjectsEvent.GetSubjects) }) {
+                state.subjects.forEachIndexed { index , subject ->
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                ) {
+                                    SubjectCard(navController, subject, childId, subject.id)
+                                }
+                            }
+                        }
+                    item {
+                        Spacer(modifier = Modifier.width(6.dp))
+                    }
+                    }
 
+                }
+
+item { Text(text = "")  }
+            item {
+                 //Button(onClick = { viewModel.onEvent(SubjectsEvent.GetSubjectsBySchoolYear(childSchoolYear)) }) {}
+                 //Button(onClick = { viewModel.onEvent(SubjectsEvent.AddSubject("Math 3eme",SchoolYear.GRADE_2, type = Subjects.ENGLISH)) }) {}
+            }
             }
         }
     }
-}
+
 
 /*@Composable
 fun HiHHH(
@@ -57,7 +101,7 @@ fun HiHHH(
 /*package com.example.pfe1.subjects.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
