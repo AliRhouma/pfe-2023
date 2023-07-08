@@ -28,6 +28,7 @@ class TasksViewModel(private val savedStateHandle: SavedStateHandle): ViewModel(
 
     init {
         getTasks(childId, subjectId)
+       // addTask("Task A", SchoolYear.GRADE_1, Subjects.MATHS, 1)
         /*for (i in 1..6){
             addTask("Task A", SchoolYear.valueOf("GRADE_$i"), Subjects.MATHS, 1)
             addTask("Task A", SchoolYear.valueOf("GRADE_$i"), Subjects.ENGLISH, 1)

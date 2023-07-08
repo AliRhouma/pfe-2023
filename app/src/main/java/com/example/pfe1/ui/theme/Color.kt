@@ -12,3 +12,22 @@ object BlueTheme {
     val darkBlue: Color = Color(0xFF1984A7)
     val lightBlue: Color = Color(0xFFBED9E4)
 }
+
+object BrandColor{
+    val Green: Color = Color(0xFF20b770)
+    val lightGreen: Color = Color(0xFFd7efe2)
+    val violet: Color = Color(0xFFcb6ce6)
+    val lightBlue: Color = Color(0xFF5ce1E6)
+    val orange: Color = Color(0xFFff914d)
+    val Gray: Color = Color(0xFFcfc9c9)
+
+
+}
+
+object GradeColor{
+    val violet: Color = Color(0xFFcb6ce6)
+    val lightBlue: Color = Color(0xFF5ce1E6)
+    val orange: Color = Color(0xFFff914d)
+
+
+}

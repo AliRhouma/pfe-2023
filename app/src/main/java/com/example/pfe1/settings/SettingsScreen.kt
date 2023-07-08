@@ -11,6 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun SettingsScreen(navController: NavController) {
@@ -21,7 +24,7 @@ fun SettingsScreen(navController: NavController) {
     ) {
         Text(text = "Welcome to Logout Screen")
         Button(
-            onClick = {  },
+            onClick = { Firebase.auth.signOut()},
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text(text = "Logout")

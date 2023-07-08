@@ -5,11 +5,11 @@ import com.example.pfe1.kidsView.data.remote.ChildRemote
 import com.example.pfe1.kidsView.domain.model.Child
 
 data class ChildHomeRemote(
-    var id: String,
-    var childId: String,
-    var schoolYear: String,
-    var childName: String,
-    var imageUrl: String
+    var id: String="",
+    var childId: String="",
+    var schoolYear: String="",
+    var childName: String="",
+    var imageUrl: String=""
 ) {
     fun toChildHome(): ChildHome {
         return ChildHome(

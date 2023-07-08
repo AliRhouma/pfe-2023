@@ -7,6 +7,8 @@ import com.example.pfe1.enumClass.SchoolYear
 import com.example.pfe1.kidsView.data.repository.ChildRepositoryImpl
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
+import com.example.pfe1.register.data.RegisterRepositoryImpl
+import com.example.pfe1.register.domain.RegisterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -15,11 +17,15 @@ import java.util.UUID
 
 class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     private val childRepository: ChildRepository = ChildRepositoryImpl()
+    private val registerRepository: RegisterRepository = RegisterRepositoryImpl()
 
     private val parentId = savedStateHandle.get<String>("parentId")?:""
 
     private val _uiState = MutableStateFlow(ChildUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _parentNameUiState = MutableStateFlow(ParentNameUiState())
+    val parentNameUiState = _parentNameUiState.asStateFlow()
 
     private val _addChildUiState = MutableStateFlow(AddChildUiState())
     val addChildUiState = _addChildUiState.asStateFlow()
@@ -41,6 +47,7 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
             is ChildEvents.ClearAddChild -> clearAddChild()
             is ChildEvents.Delete -> deleteChild(id = event.id)
+            is ChildEvents.GetParentName -> getParentName(parentId = parentId)
             else -> {}
         }
     }
@@ -81,7 +88,9 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
             parentId = parentId,
             name = name,
             schoolYear = schoolYear,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            schoolId = "4pNf4BT913VDJkOlbQ4bFHgYgwI3",
+            classId = "33d2b161-4d02-4762-8fad-143773287c26"
         )
 
         viewModelScope.launch {
@@ -123,5 +132,28 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
                 )
             }
         }
+    }
+
+    private fun getParentName(parentId: String) {
+        _parentNameUiState.value = ParentNameUiState(
+            isLoading = true
+        )
+
+        viewModelScope.launch {
+            try {
+                registerRepository.getUser(parentId).collect{
+                    _parentNameUiState.value = ParentNameUiState(
+                        isLoading = false,
+                        parentName = it.name
+                    )
+                }
+            } catch (e: Exception) {
+                _parentNameUiState.value = ParentNameUiState(
+                    isFailure = true
+                )
+
+            }
+        }
+
     }
 }

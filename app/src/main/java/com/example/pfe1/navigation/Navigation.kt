@@ -21,15 +21,26 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pfe1.childHome.ui.ChildHomeScreen
+import com.example.pfe1.classes.ui.AdministrationClassScreen
 import com.example.pfe1.kidsView.ui.BottomNavItem
 import com.example.pfe1.kidsView.ui.ChildsScreen
 import com.example.pfe1.kidsView.ui.components.BottomNavigationBar
+import com.example.pfe1.kidsView.ui.parentSettingsScreen.ParentSettingsScreen
 import com.example.pfe1.login.ui.LoginScreen
 import com.example.pfe1.questions.ui.QuestionScreen
 import com.example.pfe1.register.ui.RegisterScreen
+import com.example.pfe1.school.TeachersUi.TeachersScreen
+import com.example.pfe1.school.schoolClass.SchoolClassScreen
+import com.example.pfe1.school.schoolSzttings.SchoolSettingsScreen
+import com.example.pfe1.school.studentsUi.StudentsScreen
+import com.example.pfe1.school.ui.SchoolScreen
+import com.example.pfe1.school.ui.StudentOfSchoolScreen
 import com.example.pfe1.settings.SettingsScreen
 import com.example.pfe1.subjects.ui.SubjectsScreen
 import com.example.pfe1.task.ui.TasksScreen
+import com.example.pfe1.teacher.ui.ClassScreen
+import com.example.pfe1.teacher.ui.TeacherScreen
+import com.example.pfe1.vocabulary.ui.VocabularyTasksScreen
 
 /*
 composable(
@@ -63,7 +74,7 @@ fun Navigation() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    val screensWithBottomBar = listOf<String>(Screen.Settings.route, Screen.Childs.route)
+    val screensWithBottomBar = listOf<String>()
     Scaffold(
         bottomBar = {
             val route = navBackStackEntry?.destination?.route
@@ -108,6 +119,50 @@ fun Navigation() {
             }
 
             composable(
+                route = Screen.ClassScreen.route
+            ) {
+                ClassScreen(navController)
+            }
+
+            //composable(
+               // route = Screen.Teacher.route
+         //   ) {
+               // TeacherScreen(navController)
+           // }
+
+            composable(
+                route = Screen.Teacher.route + "?teacherId={teacherId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "teacherId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val teacherId = it.arguments?.getString("teacherId") ?: ""
+                println("ti 7ata mena")
+                TeacherScreen(navController, teacherId)
+            }
+
+            composable(
+                route = Screen.School.route + "?schoolId={schoolId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "schoolId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val schoolId = it.arguments?.getString("schoolId") ?: ""
+                SchoolScreen(navController, schoolId)
+            }
+
+
+            composable(
                 route = Screen.Subjects.route +
                         "?childId={childId}",
                 arguments = listOf(
@@ -121,6 +176,108 @@ fun Navigation() {
             ) {
                 val childId = it.arguments?.getString("childId") ?: ""
                 SubjectsScreen(navController, childId)
+            }
+
+            composable(
+                route = Screen.AdministrationClass.route +
+                        "?classesId={classesId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "classesId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val classesId = it.arguments?.getString("classesId") ?: ""
+                AdministrationClassScreen(navController, classesId)
+            }
+
+            composable(
+                route = Screen.VocabularyTasksScreen.route
+                ) {
+                VocabularyTasksScreen(navController)
+            }
+
+            composable(
+                route = Screen.StudentsOfSchool.route +
+                        "?schoolId={schoolId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "schoolId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val schoolId = it.arguments?.getString("schoolId") ?: ""
+                StudentOfSchoolScreen(navController, schoolId)
+            }
+
+            composable(
+                route = Screen.StudentsScreen.route +
+                        "?schoolId={schoolId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "schoolId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val schoolId = it.arguments?.getString("schoolId") ?: ""
+                StudentsScreen(navController, schoolId)
+            }
+
+            composable(
+                route = Screen.TeachersScreen.route +
+                        "?schoolId={schoolId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "schoolId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val schoolId = it.arguments?.getString("schoolId") ?: ""
+                TeachersScreen(navController, schoolId)
+            }
+
+            composable(
+                route = Screen.SchoolSettingsScreen.route +
+                        "?schoolId={schoolId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "schoolId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val schoolId = it.arguments?.getString("schoolId") ?: ""
+                SchoolSettingsScreen(navController, schoolId)
+            }
+
+            composable(
+                route = Screen.ParentSettingsScreen.route +
+                        "?parentId={parentId}",
+                arguments = listOf(
+                    navArgument(
+                        name = "parentId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                )
+            ) {
+                val parentId = it.arguments?.getString("parentId") ?: ""
+                ParentSettingsScreen(navController, parentId)
             }
 
 
@@ -170,6 +327,34 @@ fun Navigation() {
                     childId = childId,
                 )
 
+            }
+
+            composable(
+                route = Screen.SchoolClassScreen.route + "?schoolId={schoolId}&&classId={classId}",
+                arguments =
+                listOf(
+                    navArgument(
+                        name = "schoolId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                    navArgument(
+                        name = "classId"
+                    ) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                )
+
+            ) {
+                val schoolId = it.arguments?.getString("schoolId") ?: ""
+                val classId = it.arguments?.getString("classId") ?: ""
+                SchoolClassScreen(
+                    navController = navController,
+                    schoolId = schoolId,
+                    classId = classId
+                )
             }
 
             composable(

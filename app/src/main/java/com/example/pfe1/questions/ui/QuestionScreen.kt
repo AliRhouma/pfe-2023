@@ -75,6 +75,8 @@ fun QuestionScreen(
                             val text = question.text
 
                         }
+
+                        else -> {}
                     }
                 }
             }

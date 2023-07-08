@@ -1,5 +1,6 @@
 package com.example.pfe1.kidsView.data.repository
 
+import com.example.pfe1.classes.domain.ClassesRemote
 import com.example.pfe1.kidsView.data.remote.ChildRemote
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
@@ -9,7 +10,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resumeWithException
 
 class ChildRepositoryImpl : ChildRepository{
     private val childCollection = Firebase.firestore.collection("childs")
@@ -37,6 +40,58 @@ class ChildRepositoryImpl : ChildRepository{
         }
 
         awaitClose { cancel() }
+    }
+
+    override suspend fun getChildNormal(id: String): Child = suspendCancellableCoroutine { continuation ->
+        val listener = childCollection.document(id).addSnapshotListener { value, error ->
+            if (error != null) {
+                continuation.resumeWithException(error)
+                return@addSnapshotListener
+            }
+
+            if (value == null) {
+                continuation.resumeWithException(NullPointerException("Snapshot is null"))
+                return@addSnapshotListener
+            }
+
+            val response = value.toObject(ChildRemote::class.java)
+            if (response == null) {
+                continuation.resumeWithException(NullPointerException("Response is null"))
+                return@addSnapshotListener
+            }
+
+            val child = response.toChild()
+
+        }
+
+        continuation.invokeOnCancellation {
+            listener.remove() // Remove the snapshot listener if the coroutine is cancelled
+        }
+    }
+
+
+    override fun getChildsByClassId(classId: String): Flow<List<Child>> = callbackFlow{
+        childCollection.whereEqualTo("classId", classId).addSnapshotListener{value, error->
+            if (error != null) throw error
+            if (value == null) return@addSnapshotListener
+
+            val response = value.toObjects(ChildRemote::class.java).mapNotNull{ it?.toChild()}
+            trySend(response)
+        }
+
+        awaitClose{cancel()}
+    }
+
+    override fun getChildsBySchoolId(schoolId: String): Flow<List<Child>> = callbackFlow{
+        childCollection.whereEqualTo("schoolId", schoolId).addSnapshotListener{value, error->
+            if (error != null) throw error
+            if (value == null) return@addSnapshotListener
+
+            val response = value.toObjects(ChildRemote::class.java).mapNotNull{ it?.toChild()}
+            trySend(response)
+        }
+
+        awaitClose{cancel()}
     }
 
     override suspend fun addChild(child: Child) {

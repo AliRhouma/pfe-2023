@@ -35,7 +35,8 @@ class QuestionViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
     val taskId = savedStateHandle.get<String>("taskId") ?: ""
 
     init {
-       getQuestions(taskId)
+       getQuestions("0173d456-2289-4a54-9226-719990e914b3")
+        addQuestionMultipleChoice("1+1+1",3, listOf("12","3","7"))
     }
 
     fun onEvent(event: QuestionEvent){
@@ -60,7 +61,7 @@ class QuestionViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
 
         viewModelScope.launch {
             try {
-                questionRepository.getQuestions(taskId).collect { questions ->
+                questionRepository.getAllQuestions(taskId).collect { questions ->
                     _uiState.value = QuestionUiState(
                         isLoading = false,
                         questions = questions

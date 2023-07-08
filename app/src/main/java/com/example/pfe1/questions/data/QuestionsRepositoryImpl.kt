@@ -16,8 +16,8 @@ private val questionsCollection = Firebase.firestore.collection("questions")
 
 class QuestionsRepositoryImpl: QuestionsRepository {
 
-    override fun getQuestions(taskId: String): Flow<List<Question>> = callbackFlow {
-        questionsCollection.whereEqualTo("taskId", taskId).addSnapshotListener { value, error ->
+    override fun getAllQuestions(taskId: String): Flow<List<Question>> = callbackFlow {
+        questionsCollection.whereEqualTo("taskId", "taskId").addSnapshotListener { value, error ->
             if (error != null) throw error
             if (value == null) return@addSnapshotListener
 
@@ -34,13 +34,16 @@ class QuestionsRepositoryImpl: QuestionsRepository {
     }
 
     override suspend fun addQuestion(question: Question) {
-        val questionRemote = QuestionRemote.fromQuestion(question)
+        val questionRemote = QuestionRemote.fromQuestion(question) ?: return
 
         questionsCollection
             .document(questionRemote.id)
             .set(questionRemote)
             .await()
     }
+
+
+
 
     override suspend fun updateQuestion(question: Question) {
         TODO("Not yet implemented")

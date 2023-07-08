@@ -13,6 +13,8 @@ sealed class ChildEvents{
         val imageUrl: String
     ): ChildEvents()
 
+    object GetParentName : ChildEvents()
+
     object ClearAddChild : ChildEvents()
 }
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.pfe1.enumClass.UserType
 import com.example.pfe1.navigation.Screen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -28,23 +29,52 @@ fun LoginScreen(navController: NavHostController) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    println("ammmm Innnn")
 
     LaunchedEffect(key1 = state.isSuccess){
         if (state.isSuccess) {
+            if (state.userType == UserType.PARENT) {
+                navController.navigate(Screen.Childs.route + "?parentId=${auth.currentUser?.uid}")
+            }
+            else if (state.userType == UserType.TEACHER) {
+                navController.navigate(Screen.Teacher.route + "?teacherId=${auth.currentUser?.uid}")
+            }
+            else if (state.userType == UserType.SCHOOL) {
+                navController.navigate(Screen.School.route+"?schoolId=${auth.currentUser?.uid}")
+            }
+            else {
+                navController.navigate(Screen.Login.route)
+                println("bbbbbbbbbbb")
+            }
 
-            navController.navigate(Screen.Childs.route + "?parentId=${auth.currentUser?.uid}")
         }
     }
+    println("ammmm Innnn toooo")
+    println(Firebase.auth.currentUser == null)
 
-    var isLoginCheckLoading by remember { mutableStateOf(true) }
+    var isLoginCheckLoading by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = true) {
-        if (Firebase.auth.currentUser != null) {
-            navController.navigate(Screen.Childs.route)
+   /* LaunchedEffect(key1 = true) {
+         if (Firebase.auth.currentUser != null) {
+            println("state is ${state.userType} ")
+            if (state.userType == UserType.PARENT) {
+                navController.navigate(Screen.Childs.route + "?parentId=${auth.currentUser?.uid}")
+            }
+            else if (state.userType == UserType.TEACHER) {
+                println("hani mena")
+                navController.navigate(Screen.Teacher.route  + "?teacherId=${auth.currentUser?.uid}")
+            }
+            else if (state.userType == UserType.SCHOOL) {
+                navController.navigate(Screen.School.route+"?schoolId=${auth.currentUser?.uid}")
+
+            }
+            else {
+                println("aaaaaaaaaaaaaaaaaaa ${Firebase.auth.currentUser!!.uid}")
+            }
         } else {
             isLoginCheckLoading = false
         }
-    }
+    }*/
 
     Box(
         contentAlignment = Alignment.Center,
@@ -71,7 +101,7 @@ fun LoginScreen(navController: NavHostController) {
                 )
 
 
-
+println("hani 7dha email")
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -81,6 +111,7 @@ fun LoginScreen(navController: NavHostController) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
+                println("hani 7dha pass")
 
                 OutlinedTextField(
                     value = password,
@@ -97,7 +128,7 @@ fun LoginScreen(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        viewModel.login(email, password)
+                        viewModel.onEvent(LoginEvents.Login(email, password))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -117,23 +148,17 @@ fun LoginScreen(navController: NavHostController) {
                     Text("Register")
                 }
 
-                TextButton(
-                    onClick = {
-                        navController.navigate(Screen.Register.route)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                ) {
-                    Text("Register")
-                }
 
-                if (state.isLoading) {
-                    CircularProgressIndicator()
+
+                //if (state.isLoading) {
+                  //  CircularProgressIndicator()
+                //}
+
+              if (state.error != null) {
+                   Text(state.error ?: "")
                 }
-                else if (state.error != null) {
-                    Text(state.error ?: "")
-                }
+                println("hani 7dha if")
+
             }
         }
     }

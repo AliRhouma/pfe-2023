@@ -5,16 +5,15 @@ import com.example.pfe1.questions.domain.model.Question
 data class QuestionRemote(
     // Common
     val id: String = "",
-    // MultipleChoice
-    val multipleChoice: MultipleChoiceRemote? = null,
-
     val taskId: String = "",
     val text: String = "",
+    val type: String = "",
 
     // TrueFalse
     val trueFalse: TrueFalseRemote? = null,
 
-    val type: String = "",
+    // MultipleChoice
+    val multipleChoice: MultipleChoiceRemote? = null,
 
 
 
@@ -45,7 +44,7 @@ data class QuestionRemote(
     }
 
     companion object {
-        fun fromQuestion(question: Question): QuestionRemote {
+        fun fromQuestion(question: Question): QuestionRemote? {
             return when (question) {
                 is Question.TrueFalse -> QuestionRemote(
                     id = question.id,
@@ -61,12 +60,8 @@ data class QuestionRemote(
                     type = "MultipleChoice",
                     multipleChoice = MultipleChoiceRemote(question.answers, question.correctAnswer)
                 )
-                is Question.Unknown -> QuestionRemote(
-                    id = question.id,
-                    taskId = question.taskId,
-                    text = question.text,
-                    type = "Unknown"
-                )
+
+                else -> null
             }
         }
     }

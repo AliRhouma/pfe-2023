@@ -22,6 +22,22 @@ sealed class Question {
         val taskId: String,
         val text: String,
     ): Question()
+
+    data class QuizOfIcons(
+        val question: String,
+        val iconsUrl: List<String>,
+        val correctAnsware: String
+    ) : Question()
+
+    data class QuizVocabulary(
+        val iconUrl: String,
+        val answersUrl: List<String>
+    ) : Question()
+
+    data class SpealingBeginner(
+        val question: String,
+        val iconsUrl: List<String>
+    ) : Question()
 }
 
 

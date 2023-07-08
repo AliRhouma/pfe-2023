@@ -1,5 +1,6 @@
 package com.example.pfe1.kidsView.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,12 +51,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.HorizontalAlignmentLine
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -63,10 +69,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.pfe1.R
 import com.example.pfe1.enumClass.SchoolYear
 import com.example.pfe1.kidsView.ui.components.BottomNavigationBar
 import com.example.pfe1.kidsView.ui.components.ChildCard
 import com.example.pfe1.navigation.Screen
+import com.example.pfe1.ui.theme.BrandColor
+import com.example.pfe1.ui.theme.introRustBase
 import kotlinx.coroutines.launch
 
 
@@ -78,11 +87,11 @@ fun ChildsScreen(
     navController: NavController,
     parentId: String,
     paddingValues: PaddingValues,
-){
+) {
     val navItems = listOf(
-        BottomNavItem("Home", "",Icons.Filled.Home),
-        BottomNavItem("Profile","", Icons.Filled.Person),
-        BottomNavItem("Settings","", Icons.Filled.Settings)
+        BottomNavItem("Home", "", Icons.Filled.Home),
+        BottomNavItem("Profile", "", Icons.Filled.Person),
+        BottomNavItem("Settings", "", Icons.Filled.Settings)
     )
     var selectedTab by remember { mutableStateOf(0) }
 
@@ -95,18 +104,20 @@ fun ChildsScreen(
 
     val state by viewModel.uiState.collectAsState()
     val addState by viewModel.addChildUiState.collectAsState()
+    val parentNameState by viewModel.parentNameUiState.collectAsState()
 
     var name by remember { mutableStateOf("") }
     var schoolYear by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
+
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
 
     var selectedSchoolYear by remember { mutableStateOf(-1) }
-    val schoolYears = listOf("1","2","3","4","5","6")
+    val schoolYears = listOf("1", "2", "3", "4", "5", "6")
 
     val avatarList = listOf(
         "https://static.vecteezy.com/system/resources/previews/020/460/371/large_2x/avatar-of-a-brunei-character-free-vector.jpg",
@@ -272,11 +283,13 @@ fun ChildsScreen(
             }
             Button(
                 onClick = {
-                    viewModel.onEvent(ChildEvents.AddChild(
-                        name = name,
-                        schoolYear = SchoolYear.values()[schoolYear.toInt()],
-                        imageUrl = imageUrl
-                    ))
+                    viewModel.onEvent(
+                        ChildEvents.AddChild(
+                            name = name,
+                            schoolYear = SchoolYear.values()[schoolYear.toInt()],
+                            imageUrl = imageUrl
+                        )
+                    )
                 },
                 colors =
                 if (addState.isLoading)
@@ -285,7 +298,7 @@ fun ChildsScreen(
                     ButtonDefaults.textButtonColors(
                         containerColor = Color(0xFFBED9E4),
                         contentColor = Color.Black
-                ),
+                    ),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .padding(16.dp)
@@ -293,7 +306,7 @@ fun ChildsScreen(
                     .fillMaxWidth(0.4f),
                 enabled = !addState.isLoading,
             ) {
-                if (addState.isLoading){
+                if (addState.isLoading) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.width(6.dp))
                 }
@@ -316,72 +329,86 @@ fun ChildsScreen(
             }
         }
     ) {
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BrandColor.lightGreen)
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(20.dp)
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(4))
+                    .background(Color.White)
             ) {
-                if (state.isLoading){
-                    item {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                state.errorMessage?.let {
-                    item {
-                        Text(it)
-                    }
-                }
-
-                if (state.childList.isEmpty()
-                    && !state.isLoading
-                    && state.errorMessage == null) {
-                    item {
-                        Text(text = "There is no childs")
-                    }
-                }
-
-                /////////////////////////////////////////////////////////////////
-                state.childList.forEach() { child ->
-
-                        item {
-                            ChildCard(
-                                childName = child.name,
-                                childSchoolYear = child.schoolYear,
-                                imageUrl = child.imageUrl,
-                                id = child.id,
-                                navController = navController
-                            )
-                        }
-                    }
+                //part 1
+                Box(
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(3))
+                        .background(BrandColor.Green),
+                    contentAlignment = Center
 
 
-
-                item {
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                modalSheetState.show()
-                            }
-                        },
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = Color(0xFFBED9E4),
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(0.4f)
+                ){
+                    Text(
+                        text = parentNameState.parentName,
+                        textAlign = TextAlign.Center,
+                        fontFamily = introRustBase,
+                        fontSize = 50.sp
+                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = TopEnd
                     ) {
-                        Text(
-                            text = "Add child",
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = null,
+                            tint = Color(0xFFFFFFFF),
+                            modifier = Modifier
+                                .padding(0.dp, 5.dp, 5.dp, 0.dp)
+                                .size(40.dp)
+                                .clickable {
+
+                                   navController.navigate(Screen.ParentSettingsScreen.route + "?parentId=${parentId}")
+                                })
                     }
 
                 }
+                // Part 2
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(4.5f)
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(3))
+                        .background(BrandColor.lightGreen)
+
+
+                ){
+
+                }
+                // Part 3
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(7))
+                        .background(BrandColor.Green)
+
+
+                ){
+
+                }
+
             }
+
         }
+
+
     }
+}
+

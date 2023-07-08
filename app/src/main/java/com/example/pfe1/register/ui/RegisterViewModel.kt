@@ -2,6 +2,7 @@ package com.example.pfe1.register.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pfe1.enumClass.UserType
 import com.example.pfe1.login.data.LoginRepositoryImpl
 import com.example.pfe1.login.domain.LoginRepository
 import com.example.pfe1.login.ui.LoginUiState
@@ -17,7 +18,7 @@ class RegisterViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun register(name : String, email : String, password : String){
+    fun register(name : String, email : String, password : String, userType: UserType){
         // Loading
         _uiState.value = _uiState.value.copy(
             isLoading = true,
@@ -26,7 +27,7 @@ class RegisterViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                registerRepository.register(name,email, password)
+                registerRepository.register(name,email, password, userType)
                 // Success
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

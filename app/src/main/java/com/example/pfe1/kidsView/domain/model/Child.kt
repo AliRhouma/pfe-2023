@@ -7,6 +7,8 @@ data class Child(
     val parentId: String,
     val name: String,
     val schoolYear: SchoolYear,
-    val imageUrl : String
-)
+    val imageUrl : String,
+    val schoolId: String,
+    val classId: String,
+    )
 
