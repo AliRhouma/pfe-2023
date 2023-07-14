@@ -69,7 +69,7 @@ class StudentsViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
         schoolYear = SchoolYear.DEFAULT,
         schoolId = "",
         imageUrl = "",
-        classId = ""
+        classId = "",
     )
 
     private fun addStudentToSchool(StudentId: String, schoolId: String) {
@@ -90,7 +90,7 @@ class StudentsViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
                         schoolYear = response.schoolYear,
                         imageUrl = response.imageUrl,
                         schoolId = schoolId,
-                        classId = ""
+                        classId = "",
                     )
 
                 childRepository.updateChild(response)

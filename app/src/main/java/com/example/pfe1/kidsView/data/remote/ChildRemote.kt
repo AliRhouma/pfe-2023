@@ -21,7 +21,7 @@ data class ChildRemote(
             schoolYear = schoolYear,
             imageUrl = imageUrl,
             schoolId = schoolId,
-            classId = classId
+            classId = classId,
         )
     }
 
@@ -34,7 +34,7 @@ data class ChildRemote(
                schoolYear = child.schoolYear,
                imageUrl = child.imageUrl,
                schoolId = child.schoolId,
-               classId = child.classId
+               classId = child.classId,
            )
 
         }

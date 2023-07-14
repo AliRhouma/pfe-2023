@@ -13,7 +13,9 @@ interface RegisterRepository {
     fun getTeachersBySchoolId(schoolId: String): Flow<List<UserRemote>>
     fun getTeachersByClassId(schoolId: String): Flow<List<UserRemote>>
 
-     suspend fun updateUser(user: UserRemote)
+    suspend fun updateUser(user: UserRemote)
+    suspend fun createId():Int
+
 
 
 

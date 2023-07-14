@@ -35,6 +35,7 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
     init {
         getChilds()
+        getParentName(parentId)
     }
 
     fun onEvent(event: ChildEvents) {
@@ -89,8 +90,8 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
             name = name,
             schoolYear = schoolYear,
             imageUrl = imageUrl,
-            schoolId = "4pNf4BT913VDJkOlbQ4bFHgYgwI3",
-            classId = "33d2b161-4d02-4762-8fad-143773287c26"
+            schoolId = "",
+            classId = "",
         )
 
         viewModelScope.launch {

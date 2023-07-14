@@ -18,6 +18,7 @@ import kotlinx.coroutines.tasks.await
 
 class RegisterRepositoryImpl : RegisterRepository {
     private val userCollection = Firebase.firestore.collection("users")
+    private val idCollection = Firebase.firestore.collection("ids")
 
     override suspend fun register(
         name: String,
@@ -92,7 +93,11 @@ class RegisterRepositoryImpl : RegisterRepository {
     override suspend fun updateUser(user: UserRemote) {
             userCollection.document(user.id).set(user).await()
         }
-        }
+
+    override suspend fun createId():Int {
+        TODO("Not yet implemented")
+    }
+}
 
 
 
