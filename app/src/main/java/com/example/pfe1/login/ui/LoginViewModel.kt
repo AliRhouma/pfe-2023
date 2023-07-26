@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pfe1.enumClass.UserType
+import com.example.pfe1.idGenerator.IdGeneratorRepositoryImpl
+import com.example.pfe1.idGenerator.IdgeneretorRepository
 import com.example.pfe1.kidsView.ui.ChildEvents
 import com.example.pfe1.kidsView.ui.ChildUiState
 import com.example.pfe1.login.data.LoginRepositoryImpl
@@ -32,6 +34,7 @@ class LoginViewModel : ViewModel() {
 
 init {
     Firebase.auth.currentUser?.let { getUserType(it.uid) }
+
 }
     fun onEvent(event: LoginEvents) {
         when (event) {

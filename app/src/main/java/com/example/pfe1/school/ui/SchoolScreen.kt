@@ -70,7 +70,7 @@ fun SchoolScreen(
     navController: NavController,
     schoolId: String,
 ) {
-    println("schoooolId111 ${schoolId}")
+    println("schoooolId1kk11 ${schoolId}")
 
     val viewModel = viewModel<SchoolViewModel>()
 

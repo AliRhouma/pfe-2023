@@ -90,6 +90,15 @@ else {
                     ),
                     textAlign = TextAlign.Center
                 )
+                Text(
+                    text = "id: ${state.child.studentId}",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = BlueTheme.lightBlue
+                    ),
+                    textAlign = TextAlign.Center
+                )
 
             }
             Column(

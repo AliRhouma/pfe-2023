@@ -12,8 +12,9 @@ interface ChildRepository {
     fun getChild(id: String): Flow<Child>
     suspend fun getChildNormal(id: String): Child
     fun getChildsByClassId(classId: String): Flow<List<Child>>
+    fun getChildByStudentId(studentId: String): Child
 
-     fun getChildsBySchoolId(schoolId: String): Flow<List<Child>>
+    fun getChildsBySchoolId(schoolId: String): Flow<List<Child>>
 
 
 }

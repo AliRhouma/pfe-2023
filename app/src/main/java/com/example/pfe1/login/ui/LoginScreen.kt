@@ -22,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
+
     val viewModel = viewModel<LoginViewModel>()
     val state by viewModel.uiState.collectAsState()
 
@@ -152,7 +153,7 @@ println("hani 7dha email")
 
                 //if (state.isLoading) {
                   //  CircularProgressIndicator()
-                //}
+                //}djnddksnnjnjnjnljnjnjnjklnnnknknjknknnnlnlkkkkknknzodzodzodzjlnjjjnjksndjsnj
 
               if (state.error != null) {
                    Text(state.error ?: "")

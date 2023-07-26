@@ -1,15 +1,22 @@
 package com.example.pfe1.kidsView.data.repository
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.example.pfe1.classes.domain.ClassesRemote
+import com.example.pfe1.idGenerator.IdGeneratorRemote
 import com.example.pfe1.kidsView.data.remote.ChildRemote
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
@@ -80,6 +87,29 @@ class ChildRepositoryImpl : ChildRepository{
         }
 
         awaitClose{cancel()}
+    }
+
+    override fun getChildByStudentId(studentId: String): Child {
+        var child: Child
+
+        val scope = CoroutineScope(Dispatchers.IO)
+
+        val deferredId = scope.async {
+            try {
+                val document = childCollection.whereEqualTo("classId", studentId).get()
+                    .addOnSuccessListener {
+                        child = it.toObjects(ChildRemote::class.java).mapNotNull { it?.toChild() }.first()
+                        child
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "Error getting documents: ", it)
+                    }
+            } catch (exception: Exception) {
+                Log.d(TAG, "get failed with ", exception)
+                "defaultId"
+            }
+        }
+            //return runBlocking { deferredId.await() }
     }
 
     override fun getChildsBySchoolId(schoolId: String): Flow<List<Child>> = callbackFlow{

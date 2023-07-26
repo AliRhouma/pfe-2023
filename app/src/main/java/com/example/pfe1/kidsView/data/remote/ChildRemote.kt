@@ -11,6 +11,7 @@ data class ChildRemote(
     val imageUrl : String = "",
     val schoolId: String = "",
     val classId: String = "",
+    val studentId: String = ""
 
     ) {
     fun toChild(): Child {
@@ -22,6 +23,7 @@ data class ChildRemote(
             imageUrl = imageUrl,
             schoolId = schoolId,
             classId = classId,
+            studentId= studentId
         )
     }
 
@@ -35,6 +37,7 @@ data class ChildRemote(
                imageUrl = child.imageUrl,
                schoolId = child.schoolId,
                classId = child.classId,
+               studentId= child.studentId
            )
 
         }

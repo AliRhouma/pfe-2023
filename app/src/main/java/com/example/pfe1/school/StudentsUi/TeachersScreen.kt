@@ -48,7 +48,7 @@ import com.example.pfe1.ui.theme.introRustBase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentsScreen(navController: NavController,studentId: String) {
+fun StudentsScreen(navController: NavController,schoolId: String) {
 
     val viewModel = viewModel<StudentsViewModel>()
 
