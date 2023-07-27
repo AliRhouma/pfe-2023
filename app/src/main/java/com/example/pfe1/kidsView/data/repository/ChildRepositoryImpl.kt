@@ -89,28 +89,19 @@ class ChildRepositoryImpl : ChildRepository{
         awaitClose{cancel()}
     }
 
-    override fun getChildByStudentId(studentId: String): Child {
-        var child: Child
+    override fun getChildByStudentId(studentId: String): Flow<Child> = callbackFlow {
+            childCollection.whereEqualTo("studentId",studentId).addSnapshotListener { value, error ->
+                if (error != null) throw error
+                if (value == null) return@addSnapshotListener
 
-        val scope = CoroutineScope(Dispatchers.IO)
-
-        val deferredId = scope.async {
-            try {
-                val document = childCollection.whereEqualTo("classId", studentId).get()
-                    .addOnSuccessListener {
-                        child = it.toObjects(ChildRemote::class.java).mapNotNull { it?.toChild() }.first()
-                        child
-                    }
-                    .addOnFailureListener {
-                        Log.d(TAG, "Error getting documents: ", it)
-                    }
-            } catch (exception: Exception) {
-                Log.d(TAG, "get failed with ", exception)
-                "defaultId"
+                val response = value.toObjects(ChildRemote::class.java).first() ?: return@addSnapshotListener
+                trySend(response.toChild())
             }
+
+            awaitClose { cancel() }
         }
-            //return runBlocking { deferredId.await() }
-    }
+
+
 
     override fun getChildsBySchoolId(schoolId: String): Flow<List<Child>> = callbackFlow{
         childCollection.whereEqualTo("schoolId", schoolId).addSnapshotListener{value, error->
