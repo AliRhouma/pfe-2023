@@ -70,6 +70,7 @@ class StudentsViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
         schoolId = "",
         imageUrl = "",
         classId = "",
+        studentId= ""
     )
 
     private fun addStudentToSchool(StudentId: String, schoolId: String) {
@@ -80,7 +81,7 @@ class StudentsViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
         viewModelScope.launch {
             try {
 
-                childRepository.getChild(StudentId).collect() {
+                childRepository.getChildByStudentId(StudentId).collect() {
                     response = it
                 println("aaaaaaaaaaa ${response.id}" )
                     response = Child(
@@ -91,6 +92,7 @@ class StudentsViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
                         imageUrl = response.imageUrl,
                         schoolId = schoolId,
                         classId = "",
+                        studentId = response.studentId
                     )
 
                 childRepository.updateChild(response)

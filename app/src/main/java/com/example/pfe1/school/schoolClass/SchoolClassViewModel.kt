@@ -44,7 +44,8 @@ class SchoolClassViewModel(private val savedStateHandle: SavedStateHandle) : Vie
         schoolYear = SchoolYear.DEFAULT,
         schoolId = "",
         imageUrl = "",
-        classId = ""
+        classId = "",
+        studentId = "",
     )
 
     init {
@@ -192,7 +193,8 @@ class SchoolClassViewModel(private val savedStateHandle: SavedStateHandle) : Vie
                         schoolYear = response1.schoolYear,
                         imageUrl = response1.imageUrl,
                         schoolId = response1.schoolId!!,
-                        classId = ""
+                        classId = "",
+                        studentId = response1.studentId
                     )
 
                     childRepository.updateChild(response1)
@@ -206,7 +208,8 @@ class SchoolClassViewModel(private val savedStateHandle: SavedStateHandle) : Vie
                     schoolYear = SchoolYear.DEFAULT,
                     schoolId = "",
                     imageUrl = "",
-                    classId = ""
+                    classId = "",
+                    studentId = ""
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -235,7 +238,8 @@ class SchoolClassViewModel(private val savedStateHandle: SavedStateHandle) : Vie
                         schoolYear = response1.schoolYear,
                         imageUrl = response1.imageUrl,
                         schoolId = "",
-                        classId = classIdDestination
+                        classId = classIdDestination,
+                        studentId = response1.studentId
                     )
 
                     childRepository.updateChild(response1)
@@ -248,7 +252,8 @@ class SchoolClassViewModel(private val savedStateHandle: SavedStateHandle) : Vie
                     schoolYear = SchoolYear.DEFAULT,
                     schoolId = "",
                     imageUrl = "",
-                    classId = ""
+                    classId = "",
+                    studentId = ""
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -318,7 +323,8 @@ class SchoolClassViewModel(private val savedStateHandle: SavedStateHandle) : Vie
                                 schoolYear = response1.schoolYear,
                                 imageUrl = response1.imageUrl,
                                 schoolId = response1.schoolId,
-                                classId = classId
+                                classId = classId,
+                                studentId = response1.studentId
                             )
 
                             println("yeeeeeeeeeeees")

@@ -110,7 +110,7 @@ fun SchoolClassScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "List is Empty",
+                                    text = "There is no students in this school!",
                                     modifier = Modifier.fillMaxSize(),
                                     textAlign = TextAlign.Center,
                                     color = BrandColor.Green,

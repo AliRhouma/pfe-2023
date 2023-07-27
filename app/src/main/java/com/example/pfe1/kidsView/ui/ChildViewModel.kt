@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pfe1.enumClass.SchoolYear
+import com.example.pfe1.idGenerator.IdGeneratorRepositoryImpl
+import com.example.pfe1.idGenerator.IdgeneretorRepository
 import com.example.pfe1.kidsView.data.repository.ChildRepositoryImpl
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
@@ -18,6 +20,7 @@ import java.util.UUID
 class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     private val childRepository: ChildRepository = ChildRepositoryImpl()
     private val registerRepository: RegisterRepository = RegisterRepositoryImpl()
+    private val idGeneratorRepository: IdgeneretorRepository = IdGeneratorRepositoryImpl()
 
     private val parentId = savedStateHandle.get<String>("parentId")?:""
 
@@ -84,6 +87,7 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
             isLoading = true
         )
 
+        val studentId = idGeneratorRepository.getLastId().toLong()+1
         val child = Child(
             id = UUID.randomUUID().toString(),
             parentId = parentId,
@@ -92,11 +96,13 @@ class ChildViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
             imageUrl = imageUrl,
             schoolId = "",
             classId = "",
+            studentId= studentId.toString()
         )
 
         viewModelScope.launch {
             try {
                 childRepository.addChild(child)
+                idGeneratorRepository.updateLastId(studentId.toString())
                 _addChildUiState.value = AddChildUiState(
                     isSuccess = true
                 )

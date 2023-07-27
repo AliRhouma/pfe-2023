@@ -10,5 +10,6 @@ data class Child(
     val imageUrl : String,
     val schoolId: String,
     val classId: String,
+    val studentId: String
     )
 

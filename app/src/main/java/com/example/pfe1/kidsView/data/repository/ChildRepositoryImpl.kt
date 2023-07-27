@@ -1,15 +1,22 @@
 package com.example.pfe1.kidsView.data.repository
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.example.pfe1.classes.domain.ClassesRemote
+import com.example.pfe1.idGenerator.IdGeneratorRemote
 import com.example.pfe1.kidsView.data.remote.ChildRemote
 import com.example.pfe1.kidsView.domain.model.Child
 import com.example.pfe1.kidsView.domain.repository.ChildRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
@@ -81,6 +88,20 @@ class ChildRepositoryImpl : ChildRepository{
 
         awaitClose{cancel()}
     }
+
+    override fun getChildByStudentId(studentId: String): Flow<Child> = callbackFlow {
+            childCollection.whereEqualTo("studentId",studentId).addSnapshotListener { value, error ->
+                if (error != null) throw error
+                if (value == null) return@addSnapshotListener
+
+                val response = value.toObjects(ChildRemote::class.java).first() ?: return@addSnapshotListener
+                trySend(response.toChild())
+            }
+
+            awaitClose { cancel() }
+        }
+
+
 
     override fun getChildsBySchoolId(schoolId: String): Flow<List<Child>> = callbackFlow{
         childCollection.whereEqualTo("schoolId", schoolId).addSnapshotListener{value, error->
